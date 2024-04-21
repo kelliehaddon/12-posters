@@ -66,7 +66,7 @@ df = read_xlsx('qog_bas_cs_jan24.xlsx')
 
 # Introduction
 
-In the iconic movie [Miss Congeniality (2000)](https://www.youtube.com/watch?v=B1ZOWwW2agQ), contestants in the Miss United States pageant are asked the question “What is the one most important thing our society needs?” to which the women all give the classic answer “world peace.” But what role do women play in achieving the lofty goal of world peace? Well, according to Hudson et al. (2014), women have everything to do with world peace. Hudson et al. argue that gender inequality is linked, both empirically and theoretically, to national and international security in their book _Sex and World Peace_. While the book discusses women’s security and gender equality in a variety of areas such as personal relationships, health, and education, this analysis focus on women’s political empowerment.
+In the iconic movie [Miss Congeniality (2000)](https://www.youtube.com/watch?v=B1ZOWwW2agQ), contestants in the Miss United States pageant are asked the question “What is the one most important thing our society needs?” to which the women all give the classic answer “world peace.” But what role do women play in achieving the lofty goal of world peace? Well, according to Hudson et al. (2014), women have everything to do with world peace. Hudson et al. argue that gender inequality is linked, both empirically and theoretically, to national and international security in their book _Sex and World Peace_. While the book discusses women’s security and gender equality in a variety of areas, this analysis focuses on women’s political empowerment. Making this linkage is important as it can guide policymakers, practitioners, and world leaders to know where to focus efforts to achieve the goal of world peace.
 
 **Research question:** What impact does women’s political empowerment on world peace?
 
@@ -78,8 +78,8 @@ The data used in this analysis was compiled by Dahlberg et al. (2024) from the Q
 
 The variables that are used in this analysis include the following:
 
-- **Global Peace Index** (`gpi_gpi`): Values fall on a continuous scale ranging from 1-5, with 1 representing the most peaceful countries and 5 representing the least peaceful countries. Areas incorporated into this index include ongoing domestic and international conflict and the level of harmony or discord within a nation. Specific indicator examples include duration of involvement in conflicts, crime rates, violent demonstrations, and internal displacement (Institute for Economics & Peace, 2022).
 - **Women's Political Empowerment Index** (`vdem_gender`): Values fall on a continuous scale from 0-1, with 1 indicating higher political empowerment. This index incorporates three dimensions: fundamental civil liberties, women’s open discussion of political issues and participation in civil society organizations, and the descriptive representation of women in formal political positions (Pemstein et al., 2023).
+- **Global Peace Index** (`gpi_gpi`): Values fall on a continuous scale ranging from 1-5, with 1 representing the most peaceful countries and 5 representing the least peaceful countries. Areas incorporated into this index include ongoing domestic and international conflict and the level of harmony or discord within a nation. Specific indicator examples include duration of involvement in conflicts, crime rates, violent demonstrations, and internal displacement (Institute for Economics & Peace, 2022).
 - **Gender Inequality Index** (`gii_gii`): Values fall on a continuous scale ranging from 0-1, with 1 indicating higher disparity. It measures gender inequality in three areas: reproductive health, empowerment, and economic status (UNDP, 2022).
 - **Economy Status** (`bti_mes`): Values fall on a continuous scale ranging from 1-10, with 10 indicating higher economy status. It scores countries base on the level of socioeconomic development, the organization of the market and competition, currency and price stability, private property, the welfare regime, economic performance, and sustainability (Donner et al., 2022).
 - **Population** (`pwt_pop`): Values are the population of a country in millions (Feenstra et al., 2015).
@@ -90,13 +90,13 @@ More information on each variable can be found in _Figure 1_ and _Table 1_.
 ### _Figure 1: Distribution of Women's Political Empowerment and Levels of Peacefulness_
 ```{r, width = 10, height = 6, include=TRUE}
 p1 = df %>%
-  ggplot(aes(gpi_gpi)) +
+  ggplot(aes(vdem_gender)) +
   geom_histogram(bins = 15, color = 'white', fill = '#af4b91') +
   labs(x = 'Women\'s Political Empowerment \n(0 = low, 1 = high)') +
   theme_minimal()
 
 p2 = df %>%
-  ggplot(aes(vdem_gender)) +
+  ggplot(aes(gpi_gpi)) +
   geom_histogram(bins = 15, color = 'white', fill = '#d7642c') +
   labs(x = 'Level of Peacefulness \n(1 = high, 5 = low)', y = '') +
   theme_minimal()
@@ -152,8 +152,9 @@ summary_wdi_litrad = summarize(df,
                          mean = round(mean(wdi_litrad, na.rm = TRUE), 1),
                          median = round(median(wdi_litrad, na.rm = TRUE), 1))
 
-summary_combined = bind_rows(gpi_gpi = summary_gpi, 
+summary_combined = bind_rows( 
                              vdem_gender = summary_vdem,
+                             gpi_gpi = summary_gpi,
                              gii_gii = summary_gii_gii,
                              bti_mes = summary_bti_mes,
                              pwt_pop = summary_pwt_pop,
@@ -169,7 +170,7 @@ To determine the relationship between women’s political empowerment and world 
 
 I produced additional linear regression models adding potential confounding variables. In the second linear regression model, I added `gii_gii` to account for other areas of gender inequality in a country that could affect peace. In the third linear regression model, I added economic status, population, and literacy as measured by the variables `bti_mes`, `pwt_pop`, and `wdi_litrad`. Results can be seen in _Table 2_.
 
-### _Table 2: Linear Regression Model_
+### _Table 2: Linear Regression Models_
 ```{r, width = 10, include=TRUE}
 mods = list(
   '(1)' = lm(gpi_gpi ~ vdem_gender, df),
@@ -184,7 +185,6 @@ model %>%
   kable_styling(font_size = 100)
 ```
 
-<br>
 
 ### _Figure 2: Relationship Between Women\'s Political Empowerment and Peace_
 ```{r, include=TRUE}
@@ -197,7 +197,7 @@ df %>%
   ggplot(aes(vdem_gender, gpi_gpi)) +
   geom_point(color = '#d7642c', size = 4, alpha = 0.5) +
   geom_smooth(method = lm, se=F, lwd=2, color='#af4b91') +
-  labs(y = 'Global Peace Index', x = 'Women\'s Political Empowerment') +
+  labs(y = 'Level of Peacefulness', x = 'Women\'s Political Empowerment') +
   theme(axis.text.x = element_text(size = 100),
         axis.title.x = element_text(size = 100),
         axis.text.y = element_text(size = 100),
@@ -207,7 +207,7 @@ df %>%
 
 # Findings
 
-The results from these linear regression models fail to reject the null hypothesis, meaning that there is a statistically significant relationship between women’s political empowerment and world peace. I found that countries with greater women’s political empowerment are associated with higher levels of peace. This relationship is visually represented in _Figure 2_. While these findings to not prove causation, this correlation is consistent with the arguments presented by Hudson et al. and can be used to justify policies and programs to enhance women’s political empowerment globally with the intention of creating a more peaceful world.
+The results from these linear regression models produces the expected result, meaning that there is a statistically significant relationship between women’s political empowerment and world peace. I found that countries with greater women’s political empowerment are associated with higher levels of peace. This relationship is visually represented in _Figure 2_. While these findings to not prove causation, this correlation is consistent with the arguments presented by Hudson et al. and can be used to justify policies and programs to enhance women’s political empowerment globally with the intention of creating a more peaceful world.
 
 # References
 

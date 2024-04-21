@@ -15,17 +15,19 @@ library(kableExtra)
 library(patchwork)
 
 # data
+  # https://www.gu.se/en/quality-government/qog-data/data-downloads/basic-dataset
+  # https://www.qogdata.pol.gu.se/data/codebook_bas_jan24.pdf
 df = read_xlsx('qog_bas_cs_jan24.xlsx')
 
 # histograms
 p1 = df %>%
-  ggplot(aes(gpi_gpi)) +
+  ggplot(aes(vdem_gender)) +
   geom_histogram(bins = 15, color = 'white', fill = '#af4b91') +
   labs(x = 'Women\'s Political Empowerment \n(0 = low, 1 = high)') +
   theme_minimal()
 
 p2 = df %>%
-  ggplot(aes(vdem_gender)) +
+  ggplot(aes(gpi_gpi)) +
   geom_histogram(bins = 15, color = 'white', fill = '#d7642c') +
   labs(x = 'Level of Peacefulness \n(1 = high, 5 = low)', y = '') +
   theme_minimal()
@@ -112,7 +114,7 @@ df %>%
   ggplot(aes(vdem_gender, gpi_gpi)) +
   geom_point(color = '#d7642c', size = 4, alpha = 0.5) +
   geom_smooth(method = lm, se=F, lwd=2, color='#af4b91') +
-  labs(y = 'Global Peace Index', x = 'Women\'s Political Empowerment') +
+  labs(y = 'Level of Peacefulness', x = 'Women\'s Political Empowerment') +
   theme(axis.text.x = element_text(size = 100),
         axis.title.x = element_text(size = 100),
         axis.text.y = element_text(size = 100),
